@@ -38,7 +38,17 @@ FILE = RACINE / "file"
 PUBLIES = RACINE / "publies"
 ERREURS = RACINE / "erreurs"
 FUSEAU = ZoneInfo("Europe/Brussels")
-API = f"https://graph.instagram.com/{os.environ.get('IG_API_VERSION', 'v24.0')}"
+VERSION = os.environ.get("IG_API_VERSION", "v24.0")
+
+
+def jeton_instagram() -> bool:
+    """Jeton « connexion Instagram » (IGAA…) ou jeton Facebook (EAA…, connexion unifiée)."""
+    return os.environ.get("IG_ACCESS_TOKEN", "").startswith("IG")
+
+
+def api_base() -> str:
+    hote = "graph.instagram.com" if jeton_instagram() else "graph.facebook.com"
+    return f"https://{hote}/{VERSION}"
 MAX_TENTATIVES = 3
 LEGENDE_MAX = 2200
 HASHTAGS_MAX = 30
@@ -144,7 +154,8 @@ def posts_dus(maintenant: datetime) -> tuple[list[tuple[Path, dict]], list[str]]
 # Appels à l'API
 # --------------------------------------------------------------------------- #
 
-def appel(methode: str, chemin: str, params: dict | None = None, base: str = API) -> dict:
+def appel(methode: str, chemin: str, params: dict | None = None, base: str | None = None) -> dict:
+    base = base or api_base()
     params = dict(params or {})
     params["access_token"] = os.environ["IG_ACCESS_TOKEN"]
     url = f"{base}/{chemin}"
@@ -190,7 +201,30 @@ def attendre_conteneur(conteneur_id: str, limite_s: int = 900) -> None:
 
 
 def id_utilisateur() -> str:
-    return appel("GET", "me", {"fields": "user_id,username"})["user_id"]
+    """Identifiant du compte Instagram professionnel à publier."""
+    if os.environ.get("IG_USER_ID"):
+        return os.environ["IG_USER_ID"]
+    if jeton_instagram():
+        return appel("GET", "me", {"fields": "user_id,username"})["user_id"]
+    # Jeton Facebook (connexion unifiée) : on cherche le compte parmi ceux accessibles.
+    voulu = os.environ.get("IG_USERNAME", "penserresonner").lower()
+    trouves = []
+    for chemin, champ in (("me/accounts", "instagram_business_account{id,username}"),
+                          ("me/instagram_accounts", "id,username")):
+        try:
+            data = appel("GET", chemin, {"fields": champ, "limit": "100"}).get("data", [])
+        except ErreurAPI:
+            continue
+        for d in data:
+            compte = d.get("instagram_business_account", d)
+            if compte.get("id"):
+                trouves.append(compte)
+    for c in trouves:
+        if c.get("username", "").lower() == voulu:
+            return c["id"]
+    noms = ", ".join(f"@{c.get('username')} ({c['id']})" for c in trouves) or "aucun"
+    raise ErreurAPI(f"compte @{voulu} introuvable avec ce jeton (comptes vus : {noms}). "
+                    f"Ajoute la variable IG_USER_ID.")
 
 
 def creer_conteneur(uid: str, url_media: str, est_video: bool, extra: dict) -> str:
@@ -302,11 +336,12 @@ def cmd_publier(essai: bool) -> int:
 
 
 def cmd_verifier() -> int:
-    moi = appel("GET", "me", {"fields": "user_id,username,account_type,media_count"})
-    print(f"✅ Jeton valide : @{moi.get('username')} ({moi.get('account_type')}), "
-          f"{moi.get('media_count')} publications, id {moi.get('user_id')}")
+    print(f"Type de jeton : {'connexion Instagram' if jeton_instagram() else 'connexion unifiée (Facebook)'}")
+    uid = id_utilisateur()
+    moi = appel("GET", uid, {"fields": "username,media_count"})
+    print(f"✅ Jeton valide : @{moi.get('username')}, {moi.get('media_count')} publications, id {uid}")
     try:
-        quota = appel("GET", f"{moi['user_id']}/content_publishing_limit",
+        quota = appel("GET", f"{uid}/content_publishing_limit",
                       {"fields": "quota_usage,config"})
         print(f"   Quota de publication : {json.dumps(quota.get('data', quota))}")
     except ErreurAPI as e:
@@ -331,6 +366,9 @@ def cmd_valider() -> int:
 
 
 def cmd_renouveler() -> int:
+    if not jeton_instagram():
+        print("Jeton de connexion unifiée : il n'expire pas, rien à renouveler.", file=sys.stderr)
+        return 3
     r = appel("GET", "refresh_access_token", {"grant_type": "ig_refresh_token"},
               base="https://graph.instagram.com")
     jours = int(r.get("expires_in", 0)) // 86400

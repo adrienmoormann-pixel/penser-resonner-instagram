@@ -1,9 +1,10 @@
 name: Renouveler le jeton Instagram
 
-# Le jeton Instagram expire au bout de 60 jours. Ce workflow le renouvelle chaque
-# semaine et remplace le secret IG_ACCESS_TOKEN. Il a besoin d'un second secret,
-# GH_PAT : un jeton GitHub à accès fin, limité à ce dépôt, avec la permission
-# « Secrets : lecture et écriture ».
+# Utile uniquement avec un jeton « connexion Instagram » (IGAA…), qui expire au
+# bout de 60 jours. Un jeton de connexion unifiée (EAA…) n'expire pas : ce
+# workflow le détecte et s'arrête sans rien faire.
+# Pour un jeton IGAA…, il faut un second secret GH_PAT : un jeton GitHub à accès
+# fin, limité à ce dépôt, avec la permission « Secrets : lecture et écriture ».
 
 on:
   schedule:
@@ -20,11 +21,16 @@ jobs:
           IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
           GH_TOKEN: ${{ secrets.GH_PAT }}
         run: |
+          set +e
+          NOUVEAU=$(python3 publish.py renouveler)
+          CODE=$?
+          set -e
+          if [ "$CODE" = "3" ]; then exit 0; fi
+          if [ "$CODE" != "0" ]; then exit "$CODE"; fi
+          echo "::add-mask::$NOUVEAU"
           if [ -z "$GH_TOKEN" ]; then
             echo "::error::Secret GH_PAT absent : impossible d'enregistrer le nouveau jeton."
             exit 1
           fi
-          NOUVEAU=$(python3 publish.py renouveler)
-          echo "::add-mask::$NOUVEAU"
           gh secret set IG_ACCESS_TOKEN --repo "$GITHUB_REPOSITORY" --body "$NOUVEAU"
           echo "Secret IG_ACCESS_TOKEN mis à jour."

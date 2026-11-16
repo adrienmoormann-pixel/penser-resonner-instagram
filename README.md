@@ -48,26 +48,29 @@ Le compte doit être **Professionnel** ou **Créateur**
 (Instagram → Paramètres → Type de compte et outils).
 
 ### 2. Application Meta et jeton
-1. Sur <https://developers.facebook.com/apps>, crée une application de type
-   **Entreprise**, puis ajoute le produit **Instagram** → *API avec connexion Instagram*.
-2. Dans *Générer des jetons d'accès*, ajoute le compte @penserresonner
-   (il faut l'ajouter comme testeur Instagram et accepter l'invitation dans
-   l'app Instagram : Paramètres → Apps et sites web → Invitations de testeur).
-3. Clique **Générer le jeton** et copie-le (il commence par `IGAA…`).
-   C'est un jeton longue durée de 60 jours ; le workflow de renouvellement le
-   prolonge automatiquement.
+Application : **Penser Resonner Publication** (portefeuille Nectart), cas
+d'utilisation *API Instagram*, configuration « connexion unifiée ».
+
+1. @penserresonner est ajouté comme *Testeur(se) Instagram* (Rôles dans
+   l'application) ; l'invitation s'accepte sur
+   <https://www.instagram.com/accounts/manage_access/> → *Invitations de testeur*.
+2. Cas d'utilisation → API Instagram → *API setup with Unified login* →
+   **2. Générez des tokens d'accès** → *Ajouter un compte*, puis générer le jeton.
+
+Le jeton de connexion unifiée (`EAA…`) **n'expire pas**. Le script accepte aussi
+un jeton « connexion Instagram » (`IGAA…`, 60 jours) ; seul ce dernier a besoin
+du workflow de renouvellement et du secret `GH_PAT`.
 
 L'application peut rester en mode *Développement* : tu publies sur ton propre
 compte, aucune validation de Meta n'est nécessaire.
 
 ### 3. Secrets GitHub
-Dépôt → Settings → Secrets and variables → Actions → *New repository secret* :
+Dépôt → Settings → Secrets and variables → Actions :
 
-- `IG_ACCESS_TOKEN` : le jeton Instagram.
-- `GH_PAT` : un jeton GitHub *fine-grained*
-  (<https://github.com/settings/personal-access-tokens/new>), limité à ce dépôt,
-  permission **Secrets : Read and write**, durée maximale. Il sert uniquement
-  au renouvellement automatique du jeton Instagram.
+- secret `IG_ACCESS_TOKEN` : le jeton Meta.
+- variable `IG_USER_ID` (facultative) : l'identifiant du compte Instagram, si le
+  script ne le trouve pas tout seul (il l'affiche avec l'action `verifier`).
+- secret `GH_PAT` : seulement pour un jeton `IGAA…` (voir ci-dessus).
 
 ### 4. Vérifier
 Actions → *Publier sur Instagram* → *Run workflow* → action `verifier`.
