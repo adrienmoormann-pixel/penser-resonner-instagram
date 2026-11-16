@@ -1,0 +1,8 @@
+{
+  "publier_le": "2026-11-20T18:30:00+01:00",
+  "type": "reel",
+  "legende": "Texte de la légende.\n\n#penserresonner",
+  "medias": ["video.mp4"],
+  "couverture": "couverture.jpg",
+  "partager_dans_le_fil": true
+}

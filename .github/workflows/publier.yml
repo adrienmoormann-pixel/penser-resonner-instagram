@@ -1,0 +1,52 @@
+name: Publier sur Instagram
+
+on:
+  schedule:
+    - cron: "17 * * * *"   # toutes les heures, à HH:17 (UTC)
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "Action"
+        type: choice
+        options: [publier, essai, verifier]
+        default: publier
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publication-instagram
+  cancel-in-progress: false
+
+jobs:
+  publier:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+      PAGES_BASE_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Lancer
+        id: lancer
+        run: |
+          case "${{ inputs.action || 'publier' }}" in
+            verifier) python3 publish.py verifier ;;
+            essai)    python3 publish.py publier --essai ;;
+            *)        python3 publish.py publier ;;
+          esac
+
+      - name: Enregistrer l'état dans le dépôt
+        if: always()
+        run: |
+          git config user.name  "publication-instagram"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A file publies erreurs
+          if git diff --cached --quiet; then
+            echo "Aucun changement à enregistrer."
+          else
+            git commit -m "Instagram : mise à jour de la file"
+            git pull --rebase --autostash
+            git push
+          fi
