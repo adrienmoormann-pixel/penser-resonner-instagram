@@ -452,6 +452,7 @@ async function gh(path, opts={}){
   if (!r.ok){
     let msg = r.status + "";
     try { const j = await r.json(); msg += " — " + (j.message || ""); } catch(e){}
+    if (r.status === 403 && opts.method && opts.method !== "GET") msg = "le jeton n'a pas le droit d'écrire dans le dépôt. Dans GitHub, donne-lui l'accès au dépôt avec Contents et Actions en « Read and write » (" + msg + ")";
     const err = new Error(msg); err.status = r.status; throw err;
   }
   return r.status === 204 ? null : r.json();
