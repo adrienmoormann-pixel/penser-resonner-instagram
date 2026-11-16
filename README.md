@@ -6,7 +6,7 @@ via l'API officielle d'Instagram. Gratuit, sans serveur.
 ## Fonctionnement
 
 1. Chaque post est un dossier dans `file/` : un `post.json` et ses médias.
-2. Toutes les heures (à HH:17 UTC), le workflow **Publier sur Instagram** publie
+2. Toutes les 30 minutes (à HH:07 et HH:37), le workflow **Publier sur Instagram** publie
    le plus ancien post dont la date est passée — un seul par passage.
 3. Le dossier publié part dans `publies/` avec le lien du post dans `.etat.json`.
    Après 3 échecs, il part dans `erreurs/` et GitHub t'envoie un mail.
@@ -37,8 +37,8 @@ destiné à être publié.
 | `reel` | 1 MP4 (H.264, AAC) | 9:16 conseillé, 3 s à 15 min ; `couverture` (JPEG) facultative |
 
 Légende : 2 200 caractères et 30 hashtags au maximum. Une date sans fuseau est
-lue à l'heure de Bruxelles. Avec un passage par heure, un post part au plus tard
-une heure après l'heure prévue (parfois un peu plus : GitHub retarde les tâches
+lue à l'heure de Bruxelles. Avec un passage toutes les 30 minutes, un post part au plus tard
+une demi-heure après l'heure prévue (parfois un peu plus : GitHub retarde les tâches
 planifiées aux heures chargées).
 
 ## Installation (une seule fois)
