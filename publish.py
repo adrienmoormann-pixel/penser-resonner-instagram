@@ -246,6 +246,43 @@ def creer_conteneur(uid: str, url_media: str, est_video: bool, extra: dict) -> s
     return appel("POST", f"{uid}/media", params)["id"]
 
 
+def televerser(uri: str, donnees: bytes) -> None:
+    """Envoi direct d'une vidéo vers le serveur d'upload de Meta (upload « resumable »)."""
+    req = urllib.request.Request(uri, data=donnees, method="POST", headers={
+        "Authorization": f"OAuth {os.environ['IG_ACCESS_TOKEN']}",
+        "offset": "0",
+        "file_size": str(len(donnees)),
+        "Content-Type": "application/octet-stream",
+    })
+    try:
+        with urllib.request.urlopen(req, timeout=900) as r:
+            reponse = json.loads(r.read() or b"{}")
+    except urllib.error.HTTPError as e:
+        raise ErreurAPI(f"envoi direct → HTTP {e.code} : {e.read().decode(errors='replace')[:300]}") from None
+    if reponse and reponse.get("success") is False:
+        raise ErreurAPI(f"envoi direct refusé : {reponse}")
+
+
+def conteneur_video(uid: str, fichier: Path, url_media: str, extra: dict) -> str:
+    """Crée le conteneur d'une vidéo : envoi direct d'abord (Meta n'a rien à aller chercher),
+    puis, en secours, envoi par lien public (video_url)."""
+    try:
+        params = dict(extra, upload_type="resumable")
+        params.setdefault("media_type", "VIDEO")
+        r = appel("POST", f"{uid}/media", params)
+        cid = r["id"]
+        uri = r.get("uri") or f"https://rupload.facebook.com/ig-api-upload/{VERSION}/{cid}"
+        televerser(uri, fichier.read_bytes())
+        attendre_conteneur(cid)
+        print("   Vidéo envoyée directement à Instagram.")
+        return cid
+    except ErreurAPI as e:
+        print(f"   Envoi direct impossible ({e}) : essai par lien public.")
+    cid = creer_conteneur(uid, url_media, True, extra)
+    attendre_conteneur(cid)
+    return cid
+
+
 def publier_post(dossier: Path, post: dict, base_url: str) -> dict:
     url = lambda nom: f"{base_url}/file/{urllib.parse.quote(dossier.name)}/{urllib.parse.quote(nom)}"
     for nom in post["medias"] + ([post["couverture"]] if post.get("couverture") else []):
@@ -269,14 +306,15 @@ def publier_post(dossier: Path, post: dict, base_url: str) -> dict:
             extra["cover_url"] = url(post["couverture"])
         elif "image_couverture_ms" in post:
             extra["thumb_offset"] = str(int(post["image_couverture_ms"]))
-        cid = creer_conteneur(uid, url(post["medias"][0]), True, extra)
-        attendre_conteneur(cid)
+        cid = conteneur_video(uid, dossier / post["medias"][0], url(post["medias"][0]), extra)
     else:
         enfants = []
         for nom in post["medias"]:
-            video = Path(nom).suffix.lower() in EXT_VIDEO
-            e = creer_conteneur(uid, url(nom), video, {"is_carousel_item": "true"})
-            attendre_conteneur(e)
+            if Path(nom).suffix.lower() in EXT_VIDEO:
+                e = conteneur_video(uid, dossier / nom, url(nom), {"is_carousel_item": "true"})
+            else:
+                e = creer_conteneur(uid, url(nom), False, {"is_carousel_item": "true"})
+                attendre_conteneur(e)
             enfants.append(e)
         cid = appel("POST", f"{uid}/media", {
             "media_type": "CAROUSEL", "children": ",".join(enfants), "caption": legende,
