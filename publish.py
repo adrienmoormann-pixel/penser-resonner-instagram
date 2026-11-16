@@ -61,6 +61,10 @@ class ErreurPost(Exception):
     """Post mal formé : inutile de réessayer."""
 
 
+class PostEnAttente(ErreurPost):
+    """Post incomplet (légende à rédiger) : signalé, mais ce n'est pas une panne."""
+
+
 class ErreurAPI(Exception):
     """Erreur renvoyée par Instagram : on peut réessayer à l'heure suivante."""
 
@@ -124,6 +128,8 @@ def charger_post(dossier: Path) -> dict:
         for e in exts:
             if e not in EXT_IMAGE | EXT_VIDEO:
                 raise ErreurPost(f"{dossier.name} : format non pris en charge {e} (JPEG ou MP4)")
+    if not legende.strip() and not post.get("sans_legende"):
+        raise PostEnAttente(f"{dossier.name} : légende à rédiger (le post ne partira pas sans légende)")
     return post
 
 
@@ -141,6 +147,9 @@ def posts_dus(maintenant: datetime) -> tuple[list[tuple[Path, dict]], list[str]]
     for dossier in sorted(p for p in FILE.iterdir() if p.is_dir()):
         try:
             post = charger_post(dossier)
+        except PostEnAttente as e:
+            print(f"⏸ En attente : {e}")
+            continue
         except ErreurPost as e:
             invalides.append(str(e))
             continue
@@ -357,6 +366,8 @@ def cmd_valider() -> int:
             post = charger_post(dossier)
             print(f"✅ {dossier.name} : {post['type']}, {len(post['medias'])} média(s), "
                   f"{post['_date'].astimezone(FUSEAU):%a %d/%m %H:%M}")
+        except PostEnAttente as e:
+            print(f"⏸ {e}")
         except ErreurPost as e:
             erreurs += 1
             print(f"❌ {e}")

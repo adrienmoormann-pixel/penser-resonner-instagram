@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Planning Instagram — Penser &amp; Résonner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@1,6..72,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#efe9df; --paper-2:#e7e0d4; --card:#fbf8f3; --ink:#262523; --ink-2:#5b5853; --ink-3:#8d8981;
+  --line:#d9d1c3; --red:#e92f24; --red-soft:#fbe3e0; --green:#2f7d4f; --green-soft:#e1f0e6;
+  --amber:#b7791f; --amber-soft:#f8ecd6; --blue:#2b5ea7; --blue-soft:#e2eaf6;
+  --shadow:0 1px 2px rgba(38,37,35,.06),0 4px 16px rgba(38,37,35,.06);
+  --shadow-lg:0 10px 40px rgba(38,37,35,.18);
+  --radius:14px; --mono:"IBM Plex Mono",ui-monospace,monospace; --sans:"Archivo",system-ui,sans-serif;
+}
+[data-theme="nuit"]{
+  --paper:#1c1b1a; --paper-2:#242321; --card:#2a2927; --ink:#f1ece4; --ink-2:#bdb7ad; --ink-3:#8a857c;
+  --line:#3a3835; --red-soft:#3b1f1c; --green-soft:#1d3326; --amber-soft:#3a2f1c; --blue-soft:#1d2a3d;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 16px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;height:100%}
+body{
+  font-family:var(--sans);color:var(--ink);background:var(--paper);
+  background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:48px 48px;background-attachment:fixed;
+  -webkit-font-smoothing:antialiased;
+}
+body::before{content:"";position:fixed;inset:0;background:var(--paper);opacity:.82;pointer-events:none;z-index:-1}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer}
+.mono{font-family:var(--mono)}
+.wrap{max-width:1480px;margin:0 auto;padding:20px 24px 40px}
+
+/* En-tête */
+header{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+.brand{display:flex;align-items:center;gap:12px;margin-right:auto}
+.brand svg{flex:none}
+.brand h1{font-size:19px;font-weight:800;letter-spacing:-.01em;margin:0;line-height:1.1}
+.brand small{display:block;font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:.06em;text-transform:uppercase}
+.brand a{color:inherit;text-decoration:none}
+.toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.btn{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:8px 13px;font-size:14px;font-weight:600;display:inline-flex;align-items:center;gap:7px;box-shadow:var(--shadow);transition:transform .08s,background .15s,border-color .15s}
+.btn:hover{border-color:var(--ink-3)}
+.btn:active{transform:translateY(1px)}
+.btn.primary{background:var(--red);border-color:var(--red);color:#fff}
+.btn.primary:hover{filter:brightness(1.05)}
+.btn.ghost{background:transparent;box-shadow:none}
+.btn.icon{padding:8px 10px}
+.btn.danger{color:var(--red)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.seg{display:inline-flex;background:var(--paper-2);border:1px solid var(--line);border-radius:10px;padding:3px}
+.seg button{border:0;background:transparent;padding:6px 12px;border-radius:7px;font-size:13px;font-weight:600;color:var(--ink-2)}
+.seg button.on{background:var(--card);color:var(--ink);box-shadow:var(--shadow)}
+.pill{font-family:var(--mono);font-size:11.5px;padding:5px 10px;border-radius:999px;border:1px solid var(--line);background:var(--card);display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--ink-3);display:inline-block}
+.dot.ok{background:var(--green)} .dot.ko{background:var(--red)} .dot.wait{background:var(--amber)}
+
+/* Statistiques */
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:18px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.stat .k{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.stat .v{font-size:30px;font-weight:800;letter-spacing:-.02em;margin-top:4px;line-height:1}
+.stat .s{font-size:12.5px;color:var(--ink-2);margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stat.accent .v{color:var(--red)}
+.stat::after{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:transparent}
+.stat.accent::after{background:var(--red)}
+
+/* Grille principale */
+.main{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:18px;align-items:start}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.calhead{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--line)}
+.calhead h2{margin:0;font-size:22px;font-weight:800;letter-spacing:-.02em;text-transform:capitalize;min-width:190px}
+.calhead .spacer{flex:1}
+.dow{display:grid;grid-template-columns:repeat(7,1fr);border-bottom:1px solid var(--line)}
+.dow div{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);padding:8px 10px}
+.grid{display:grid;grid-template-columns:repeat(7,1fr);grid-auto-rows:minmax(132px,auto)}
+.cell{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:6px;display:flex;flex-direction:column;gap:5px;min-width:0;position:relative;transition:background .12s}
+.cell:nth-child(7n){border-right:0}
+.cell .num{display:flex;align-items:center;justify-content:space-between;font-size:12.5px;font-weight:600;color:var(--ink-2);padding:2px 4px}
+.cell .num .add{opacity:0;border:0;background:transparent;font-size:17px;line-height:1;color:var(--ink-3);padding:0 4px;border-radius:6px}
+.cell:hover .num .add{opacity:1}
+.cell .num .add:hover{background:var(--paper-2);color:var(--ink)}
+.cell.out{background:repeating-linear-gradient(135deg,transparent 0 6px,rgba(0,0,0,.018) 6px 12px)}
+.cell.out .num{color:var(--ink-3);opacity:.6}
+.cell.past{background:color-mix(in srgb,var(--paper) 45%,transparent)}
+.cell.today .num span{background:var(--red);color:#fff;border-radius:999px;padding:1px 8px}
+.cell.over{background:var(--blue-soft);outline:2px dashed var(--blue);outline-offset:-3px}
+.cell.over.refuse{background:var(--red-soft);outline-color:var(--red)}
+.cell.filedrop{background:var(--amber-soft);outline:2px dashed var(--amber);outline-offset:-3px}
+
+/* Cartes de post */
+.chip{display:flex;gap:7px;align-items:center;background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:4px;cursor:grab;user-select:none;position:relative;transition:box-shadow .12s,transform .12s;min-width:0}
+.chip:hover{box-shadow:var(--shadow);transform:translateY(-1px)}
+.chip.dragging{opacity:.35}
+.chip .th{width:30px;height:40px;border-radius:6px;background:var(--paper-2) center/cover no-repeat;flex:none;overflow:hidden;position:relative;display:grid;place-items:center;font-size:13px;color:var(--ink-3)}
+.chip .th img,.chip .th video{width:100%;height:100%;object-fit:cover;display:block}
+.chip .meta{min-width:0;flex:1}
+.chip .t{font-family:var(--mono);font-size:11px;color:var(--ink-2);display:flex;gap:5px;align-items:center}
+.chip .c{font-size:12px;font-weight:600;line-height:1.25;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.chip.publie{cursor:pointer;opacity:.78}
+.chip.publie::after{content:"✓";position:absolute;right:6px;top:4px;font-size:11px;color:var(--green);font-weight:800}
+.chip.erreur{border-color:var(--red);background:var(--red-soft)}
+.chip.manque{border-color:var(--amber);background:var(--amber-soft)}
+.badge{font-family:var(--mono);font-size:10px;letter-spacing:.04em;text-transform:uppercase;padding:1px 6px;border-radius:5px;background:var(--paper-2);color:var(--ink-2)}
+.badge.reel{background:var(--ink);color:var(--paper)}
+.badge.red{background:var(--red);color:#fff}
+.more{font-size:11.5px;color:var(--ink-3);padding:0 4px}
+
+/* Liste */
+.list{padding:8px 16px 16px}
+.list .day{display:grid;grid-template-columns:120px 1fr;gap:14px;padding:14px 0;border-bottom:1px solid var(--line)}
+.list .day:last-child{border-bottom:0}
+.list .day .d{font-weight:800;font-size:15px}
+.list .day .d::first-letter{text-transform:uppercase}
+.list .day .d small{display:block;font-family:var(--mono);font-weight:400;font-size:11px;color:var(--ink-3)}
+.list .items{display:grid;gap:10px}
+.row{display:grid;grid-template-columns:64px 1fr auto;gap:14px;align-items:center;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:8px;cursor:pointer}
+.row:hover{box-shadow:var(--shadow)}
+.row .th{width:64px;height:86px;border-radius:8px;background:var(--paper-2);overflow:hidden;display:grid;place-items:center;color:var(--ink-3)}
+.row .th img,.row .th video{width:100%;height:100%;object-fit:cover}
+.row .txt{font-size:13.5px;line-height:1.4;color:var(--ink-2);overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;white-space:pre-line}
+.row .top{display:flex;gap:8px;align-items:center;margin-bottom:4px;font-family:var(--mono);font-size:12px}
+.empty{padding:50px 20px;text-align:center;color:var(--ink-3)}
+
+/* Barre latérale */
+aside{display:grid;gap:18px;min-width:0}
+.main>section{min-width:0}
+aside .panel{min-width:0;overflow:hidden}
+.next .it{min-width:0}
+.next .th{width:30px;height:40px;border-radius:6px;overflow:hidden;flex:none;background:var(--paper-2);display:grid;place-items:center;color:var(--ink-3)}
+.next .th img,.next .th video{width:100%;height:100%;object-fit:cover;display:block}
+aside .panel{padding:14px}
+aside h3{margin:0 0 10px;font-size:13px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.07em;color:var(--ink-2);display:flex;align-items:center;justify-content:space-between}
+.dropzone-side{border:1.5px dashed var(--line);border-radius:12px;padding:10px;display:grid;gap:7px;min-height:84px;transition:background .12s,border-color .12s}
+.dropzone-side.over{border-color:var(--blue);background:var(--blue-soft)}
+.dropzone-side .hint{font-size:12.5px;color:var(--ink-3);text-align:center;padding:8px 4px}
+.next{display:grid;gap:8px}
+.next .it{display:flex;gap:10px;align-items:center;font-size:13px;cursor:pointer;padding:4px;border-radius:8px}
+.next .it:hover{background:var(--paper-2)}
+.next .it .when{font-family:var(--mono);font-size:11.5px;color:var(--ink-3)}
+.alert{display:flex;gap:9px;align-items:flex-start;font-size:13px;padding:8px 10px;border-radius:10px;background:var(--amber-soft);margin-bottom:7px;cursor:pointer;line-height:1.35}
+.alert.ko{background:var(--red-soft)}
+.alert b{font-weight:700}
+.legend{display:grid;gap:6px;font-size:12.5px;color:var(--ink-2)}
+.legend span{display:inline-block;width:12px;height:12px;border-radius:4px;vertical-align:-2px;margin-right:6px;border:1px solid var(--line)}
+
+/* Fenêtres */
+.scrim{position:fixed;inset:0;background:rgba(20,19,18,.45);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;padding:20px;z-index:50}
+.scrim.on{display:flex;animation:fade .15s}
+@keyframes fade{from{opacity:0}}
+.modal{background:var(--card);border-radius:18px;box-shadow:var(--shadow-lg);width:min(1040px,100%);max-height:calc(100vh - 40px);overflow:auto;border:1px solid var(--line);animation:pop .18s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes pop{from{transform:translateY(10px) scale(.98);opacity:0}}
+.modal.small{width:min(520px,100%)}
+.mh{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--card);z-index:2}
+.mh h2{margin:0;font-size:18px;font-weight:800;flex:1}
+.mb{padding:20px}
+.mf{display:flex;gap:10px;align-items:center;padding:14px 20px;border-top:1px solid var(--line);position:sticky;bottom:0;background:var(--card)}
+.mf .spacer{flex:1}
+.ed{display:grid;grid-template-columns:330px 1fr;gap:22px}
+.media{display:grid;gap:10px;align-content:start}
+.drop{border:2px dashed var(--line);border-radius:14px;aspect-ratio:9/16;display:grid;place-items:center;text-align:center;padding:20px;color:var(--ink-2);background:var(--paper);transition:background .12s,border-color .12s;position:relative;overflow:hidden}
+.drop.over{border-color:var(--red);background:var(--red-soft)}
+.drop .big{font-size:40px;line-height:1;margin-bottom:8px}
+.drop strong{display:block;font-size:15px;margin-bottom:4px;color:var(--ink)}
+.drop small{font-size:12px;color:var(--ink-3)}
+.drop video,.drop img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000}
+.thumbs{display:flex;gap:6px;flex-wrap:wrap}
+.thumbs .t{width:52px;height:70px;border-radius:7px;overflow:hidden;position:relative;border:2px solid transparent;cursor:pointer;background:var(--paper-2)}
+.thumbs .t.on{border-color:var(--red)}
+.thumbs .t img,.thumbs .t video{width:100%;height:100%;object-fit:cover}
+.thumbs .t button{position:absolute;top:2px;right:2px;border:0;background:rgba(0,0,0,.6);color:#fff;border-radius:5px;font-size:11px;padding:0 5px;line-height:16px}
+.cover{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:10px;display:grid;gap:8px}
+.cover .row2{display:flex;gap:10px;align-items:center}
+.cover canvas,.cover img.cv{width:54px;height:96px;border-radius:6px;object-fit:cover;background:var(--paper-2);flex:none}
+.cover input[type=range]{width:100%;accent-color:var(--red)}
+.field{display:grid;gap:6px;margin-bottom:16px}
+.field label{font-size:12px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--ink-2);display:flex;justify-content:space-between;align-items:center}
+.input,textarea{border:1px solid var(--line);background:var(--paper);border-radius:10px;padding:9px 11px;width:100%;outline:none;transition:border-color .12s,box-shadow .12s}
+.input:focus,textarea:focus{border-color:var(--ink-3);box-shadow:0 0 0 3px color-mix(in srgb,var(--red) 18%,transparent)}
+textarea{min-height:250px;resize:vertical;line-height:1.5;font-size:14px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.counter{font-family:var(--mono);font-size:11.5px;color:var(--ink-3)}
+.counter.warn{color:var(--amber)} .counter.bad{color:var(--red)}
+.switch{display:flex;align-items:center;gap:10px;font-size:14px;cursor:pointer}
+.switch input{accent-color:var(--red);width:17px;height:17px}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.tags span{font-family:var(--mono);font-size:11.5px;background:var(--paper-2);padding:3px 8px;border-radius:999px;cursor:pointer}
+.tags span:hover{background:var(--red-soft)}
+.note{font-size:12.5px;color:var(--ink-2);background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:10px 12px;line-height:1.45}
+.note.warn{background:var(--amber-soft);border-color:transparent}
+.note.ko{background:var(--red-soft);border-color:transparent}
+.preview-ig{border:1px solid var(--line);border-radius:12px;padding:12px;background:var(--paper);font-size:13.5px;line-height:1.45;white-space:pre-line;max-height:150px;overflow:auto}
+.preview-ig b{font-weight:700}
+.link{color:var(--blue);text-decoration:none;font-weight:600}
+.link:hover{text-decoration:underline}
+
+/* Notifications */
+.toasts{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);display:grid;gap:8px;z-index:80;pointer-events:none}
+.toast{background:var(--ink);color:var(--paper);padding:11px 16px;border-radius:12px;font-size:14px;box-shadow:var(--shadow-lg);display:flex;gap:10px;align-items:center;animation:pop .2s;pointer-events:auto;max-width:560px}
+.toast.ko{background:var(--red);color:#fff}
+.toast.ok::before{content:"✓";font-weight:800;color:#7fd39b}
+.spin{width:14px;height:14px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+.progress{height:4px;background:var(--paper-2);border-radius:4px;overflow:hidden}
+.progress div{height:100%;background:var(--red);width:0;transition:width .2s}
+.globaldrop{position:fixed;inset:0;background:color-mix(in srgb,var(--red) 14%,transparent);border:3px dashed var(--red);z-index:40;display:none;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:var(--red);pointer-events:none}
+.globaldrop.on{display:flex}
+.skeleton{background:linear-gradient(90deg,var(--paper-2),var(--paper),var(--paper-2));background-size:200% 100%;animation:sk 1.2s infinite;border-radius:8px}
+@keyframes sk{to{background-position:-200% 0}}
+.onboard{padding:40px;display:grid;gap:14px;max-width:620px;margin:30px auto;text-align:left}
+.onboard h2{margin:0;font-size:26px;font-weight:800;letter-spacing:-.02em}
+.onboard ol{margin:0;padding-left:20px;line-height:1.7;color:var(--ink-2)}
+kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:0 5px;background:var(--paper)}
+
+@media (max-width:1100px){.main{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.ed{grid-template-columns:1fr}.drop{aspect-ratio:auto;min-height:280px}}
+@media (max-width:700px){.wrap{padding:14px}.grid{grid-auto-rows:minmax(90px,auto)}.chip .meta{display:none}.list .day{grid-template-columns:1fr}.two{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true"><line x1="20" y1="8" x2="8" y2="30" stroke="currentColor" stroke-width="1.6"/><line x1="20" y1="8" x2="32" y2="30" stroke="currentColor" stroke-width="1.6"/><line x1="8" y1="30" x2="32" y2="30" stroke="currentColor" stroke-width="1.6"/><circle cx="20" cy="8" r="5" fill="#e92f24"/><circle cx="8" cy="30" r="5" fill="currentColor"/><circle cx="32" cy="30" r="5" fill="currentColor"/></svg>
+      <div><h1>Planning Instagram</h1><small><a id="igLink" href="https://www.instagram.com/penserresonner/" target="_blank" rel="noopener">@penserresonner</a> · Penser &amp; Résonner</small></div>
+    </div>
+    <div class="toolbar">
+      <span class="pill" id="syncPill"><span class="dot"></span><span>Non connecté</span></span>
+      <span class="pill" id="nextRun" title="Le robot de publication passe toutes les 30 minutes"></span>
+      <button class="btn icon ghost" id="btnTheme" title="Mode jour / nuit"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.5a6.5 6.5 0 0 1 0 13z" fill="currentColor"/></svg></button>
+      <button class="btn icon" id="btnRefresh" title="Actualiser (R)">↻</button>
+      <button class="btn icon" id="btnSettings" title="Réglages">⚙</button>
+      <button class="btn primary" id="btnNew">＋ Nouveau post</button>
+    </div>
+  </header>
+
+  <section class="stats" id="stats"></section>
+
+  <div class="main">
+    <section class="panel" id="calPanel">
+      <div class="calhead">
+        <button class="btn icon" id="prev" title="Mois précédent (←)">‹</button>
+        <h2 id="monthTitle">—</h2>
+        <button class="btn icon" id="next" title="Mois suivant (→)">›</button>
+        <button class="btn" id="today">Aujourd'hui</button>
+        <div class="spacer"></div>
+        <div class="seg" id="viewSeg"><button data-v="mois" class="on">Mois</button><button data-v="liste">Liste</button></div>
+      </div>
+      <div id="calBody"></div>
+    </section>
+
+    <aside>
+      <div class="panel">
+        <h3>Brouillons <span class="badge" id="draftCount">0</span></h3>
+        <div class="dropzone-side" id="drafts"><div class="hint">Glisse un post ici pour le retirer du planning.<br>Glisse un brouillon sur un jour pour le programmer.</div></div>
+      </div>
+      <div class="panel" id="alertsPanel">
+        <h3>À surveiller</h3>
+        <div id="alerts"></div>
+      </div>
+      <div class="panel">
+        <h3>Prochaines publications</h3>
+        <div class="next" id="nextList"></div>
+      </div>
+      <div class="panel">
+        <h3>Légende</h3>
+        <div class="legend">
+          <div><span style="background:var(--paper)"></span>Programmé</div>
+          <div><span style="background:var(--amber-soft);border-color:var(--amber)"></span>Légende à rédiger</div>
+          <div><span style="background:var(--red-soft);border-color:var(--red)"></span>Échec de publication</div>
+          <div><span style="background:var(--paper);opacity:.6"></span>Publié ✓</div>
+          <div style="margin-top:4px;color:var(--ink-3)">Raccourcis : <kbd>N</kbd> nouveau · <kbd>←</kbd><kbd>→</kbd> mois · <kbd>R</kbd> actualiser</div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<div class="globaldrop" id="globalDrop">Dépose tes vidéos pour créer un post</div>
+
+<!-- Éditeur -->
+<div class="scrim" id="edScrim">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div class="mh"><h2 id="edTitle">Nouveau post</h2><span class="badge" id="edZone"></span><button class="btn icon ghost" data-close>✕</button></div>
+    <div class="mb">
+      <div class="ed">
+        <div class="media">
+          <div class="drop" id="edDrop">
+            <div><div class="big">⇪</div><strong>Glisse ta vidéo ici</strong><small>ou clique pour choisir<br>MP4 (reel) · JPEG/PNG (image) · 2 à 10 fichiers = carrousel</small></div>
+          </div>
+          <input type="file" id="edFile" accept="video/mp4,video/quicktime,image/*" multiple hidden>
+          <div class="thumbs" id="edThumbs"></div>
+          <div class="cover" id="edCover" hidden>
+            <div class="row2"><canvas id="cvCanvas" width="540" height="960"></canvas>
+              <div style="flex:1;display:grid;gap:6px"><b style="font-size:13px">Couverture du reel</b>
+                <input type="range" id="cvRange" min="0" max="100" step="0.1" value="0">
+                <div style="display:flex;gap:6px;flex-wrap:wrap"><span class="counter" id="cvTime">0,0 s</span>
+                  <button class="btn" id="cvUpload" style="padding:4px 9px;font-size:12px">Importer une image</button></div>
+              </div></div>
+            <input type="file" id="cvFile" accept="image/*" hidden>
+          </div>
+          <div class="note" id="edMediaInfo" hidden></div>
+        </div>
+        <div>
+          <div class="two">
+            <div class="field"><label>Date</label><input class="input" type="date" id="edDate"></div>
+            <div class="field"><label>Heure</label><input class="input" type="time" id="edTime" step="300"></div>
+          </div>
+          <div class="field"><label>Type <span class="counter" id="edTypeHint"></span></label>
+            <div class="seg" id="edType"><button data-t="reel">Reel</button><button data-t="image">Image</button><button data-t="carrousel">Carrousel</button></div>
+          </div>
+          <div class="field">
+            <label>Légende <span><span class="counter" id="edCount">0 / 2200</span> · <span class="counter" id="edTags">0 hashtag</span></span></label>
+            <textarea id="edCaption" placeholder="Résumé de la vidéo, sources, puis les hashtags…"></textarea>
+            <div class="tags" id="edTagSugg"></div>
+            <div style="display:flex;gap:12px;align-items:center;margin-top:6px;flex-wrap:wrap">
+              <button class="btn ghost" id="edAskClaude" style="padding:4px 0;box-shadow:none;border:0;color:var(--blue)">Demander la légende à Claude ↗</button>
+              <span class="counter" id="edAskInfo"></span>
+            </div>
+          </div>
+          <label class="switch" id="edFeedWrap"><input type="checkbox" id="edFeed" checked> Afficher aussi le reel dans la grille du profil</label>
+          <div class="field" style="margin-top:16px"><label>Aperçu</label><div class="preview-ig" id="edPreview"></div></div>
+          <div id="edWarn"></div>
+          <div class="progress" id="edProg" hidden><div></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn danger" id="edDelete">Supprimer</button>
+      <a class="link" id="edIgLink" target="_blank" rel="noopener" hidden>Voir sur Instagram ↗</a>
+      <div class="spacer"></div>
+      <button class="btn" id="edNow" title="Publie au prochain passage du robot">Publier maintenant</button>
+      <button class="btn" id="edDraft">Enregistrer en brouillon</button>
+      <button class="btn primary" id="edSave">Programmer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Réglages -->
+<div class="scrim" id="setScrim">
+  <div class="modal small" role="dialog" aria-modal="true">
+    <div class="mh"><h2>Connexion à GitHub</h2><button class="btn icon ghost" data-close>✕</button></div>
+    <div class="mb">
+      <p class="note">Le planning vit dans le dépôt GitHub. Pour le modifier depuis cette page, colle un <b>jeton GitHub à accès fin</b> limité à ce dépôt, avec les permissions <b>Contents : Read and write</b> et <b>Actions : Read and write</b>. Il reste uniquement dans ce navigateur.</p>
+      <p style="font-size:13px;margin:12px 0"><a class="link" href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">Créer un jeton sur GitHub ↗</a></p>
+      <div class="field"><label>Dépôt</label><input class="input mono" id="setRepo" value="adrienmoormann-pixel/penser-resonner-instagram"></div>
+      <div class="field"><label>Jeton</label><input class="input mono" id="setToken" type="password" placeholder="github_pat_…" autocomplete="off"></div>
+      <div class="field"><label>Heure par défaut des nouveaux posts</label><input class="input" id="setHour" type="time" value="18:30"></div>
+      <div id="setMsg"></div>
+    </div>
+    <div class="mf"><button class="btn danger" id="setForget">Oublier le jeton</button><div class="spacer"></div><button class="btn primary" id="setSave">Enregistrer et tester</button></div>
+  </div>
+</div>
+
+<!-- Confirmation -->
+<div class="scrim" id="cfScrim">
+  <div class="modal small" role="alertdialog" aria-modal="true">
+    <div class="mh"><h2 id="cfTitle">Confirmer</h2></div>
+    <div class="mb"><p id="cfText" style="margin:0;line-height:1.5"></p></div>
+    <div class="mf"><div class="spacer"></div><button class="btn" id="cfNo">Annuler</button><button class="btn primary" id="cfYes">Confirmer</button></div>
+  </div>
+</div>
+
+<div class="toasts" id="toasts"></div>
+
+<script>
+"use strict";
+/* ------------------------------------------------------------------ */
+/* Réglages et utilitaires                                             */
+/* ------------------------------------------------------------------ */
+const ZONES = {file:"file", brouillons:"brouillons", publies:"publies", erreurs:"erreurs"};
+const MOIS = ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+const JOURS = ["lun.","mar.","mer.","jeu.","ven.","sam.","dim."];
+const HASHTAGS = ["#penserresonner","#désinformation","#espritcritique","#médias","#politique","#société","#économie","#climat","#factchecking","#info"];
+const $ = s => document.querySelector(s);
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem("pr-ig-"+k); return v===null? d : v; }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem("pr-ig-"+k, v); }catch(e){} },
+  del(k){ try{ localStorage.removeItem("pr-ig-"+k); }catch(e){} }
+};
+const cfg = {
+  get repo(){ return store.get("repo", "adrienmoormann-pixel/penser-resonner-instagram"); },
+  get token(){ return store.get("token", ""); },
+  get hour(){ return store.get("hour", "18:30"); },
+};
+const pagesBase = () => { const [o, r] = cfg.repo.split("/"); return `https://${o.toLowerCase()}.github.io/${r}`; };
+const pad = n => String(n).padStart(2, "0");
+const ymd = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const hm = d => `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+function isoLocal(d){
+  const off = -d.getTimezoneOffset(), s = off >= 0 ? "+" : "-", a = Math.abs(off);
+  return `${ymd(d)}T${hm(d)}:00${s}${pad(Math.floor(a/60))}:${pad(a%60)}`;
+}
+const sameDay = (a, b) => a && b && a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate();
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const slugify = s => (s||"post").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,40) || "post";
+const firstLine = s => (s||"").split("\n").find(l => l.trim()) || "";
+const hashtagCount = s => ((s||"").match(/#[\p{L}\p{N}_]+/gu) || []).length;
+const fmtDay = d => `${["dimanche","lundi","mardi","mercredi","jeudi","vendredi","samedi"][d.getDay()]} ${d.getDate()} ${MOIS[d.getMonth()]}`;
+const fmtSize = b => b > 1048576 ? (b/1048576).toFixed(1).replace(".",",")+" Mo" : Math.round(b/1024)+" Ko";
+function nextRunAfter(d){
+  const r = new Date(d); r.setSeconds(0,0);
+  const m = r.getMinutes();
+  if (m < 7) r.setMinutes(7); else if (m < 37) r.setMinutes(37); else { r.setHours(r.getHours()+1); r.setMinutes(7); }
+  return r;
+}
+function relTime(d){
+  const diff = d - new Date(), abs = Math.abs(diff), min = Math.round(abs/60000);
+  const txt = min < 60 ? `${min} min` : min < 1440 ? `${Math.floor(min/60)} h ${pad(min%60)}` : `${Math.round(min/1440)} j`;
+  return diff >= 0 ? "dans " + txt : "il y a " + txt;
+}
+function b64FromBytes(bytes){
+  let s = ""; const ch = 0x8000;
+  for (let i = 0; i < bytes.length; i += ch) s += String.fromCharCode.apply(null, bytes.subarray(i, i+ch));
+  return btoa(s);
+}
+const b64FromText = t => b64FromBytes(new TextEncoder().encode(t));
+const textFromB64 = b => new TextDecoder().decode(Uint8Array.from(atob(b.replace(/\n/g,"")), c => c.charCodeAt(0)));
+const fileToB64 = f => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(",")[1]); r.onerror = rej; r.readAsDataURL(f); });
+
+/* ------------------------------------------------------------------ */
+/* Notifications et confirmation                                       */
+/* ------------------------------------------------------------------ */
+function toast(msg, kind="", ms=3800){
+  const t = document.createElement("div");
+  t.className = "toast " + kind; t.innerHTML = msg;
+  $("#toasts").appendChild(t);
+  if (ms) setTimeout(() => t.remove(), ms);
+  return t;
+}
+function confirmBox(title, text, yes="Confirmer"){
+  return new Promise(res => {
+    $("#cfTitle").textContent = title; $("#cfText").innerHTML = text; $("#cfYes").textContent = yes;
+    const sc = $("#cfScrim"); sc.classList.add("on");
+    const done = v => { sc.classList.remove("on"); $("#cfYes").onclick = $("#cfNo").onclick = null; res(v); };
+    $("#cfYes").onclick = () => done(true); $("#cfNo").onclick = () => done(false);
+  });
+}
+
+/* ------------------------------------------------------------------ */
+/* API GitHub                                                          */
+/* ------------------------------------------------------------------ */
+async function gh(path, opts={}){
+  const headers = {"Accept":"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28"};
+  if (cfg.token) headers.Authorization = "Bearer " + cfg.token;
+  if (opts.body) headers["Content-Type"] = "application/json";
+  const r = await fetch("https://api.github.com/repos/" + cfg.repo + path, {method: opts.method || "GET", headers, body: opts.body ? JSON.stringify(opts.body) : undefined, cache:"no-store"});
+  if (!r.ok){
+    let msg = r.status + "";
+    try { const j = await r.json(); msg += " — " + (j.message || ""); } catch(e){}
+    const err = new Error(msg); err.status = r.status; throw err;
+  }
+  return r.status === 204 ? null : r.json();
+}
+
+/* Un commit atomique : changes = [{path, b64}|{path, text}|{path, sha}|{path, del:true}] */
+async function commit(changes, message, onProgress){
+  for (let attempt = 0; attempt < 3; attempt++){
+    const ref = await gh("/git/ref/heads/main");
+    const base = await gh("/git/commits/" + ref.object.sha);
+    const tree = [];
+    let i = 0;
+    for (const c of changes){
+      if (c.del) tree.push({path:c.path, mode:"100644", type:"blob", sha:null});
+      else if (c.sha) tree.push({path:c.path, mode:"100644", type:"blob", sha:c.sha});
+      else {
+        if (!c._sha){
+          const blob = await gh("/git/blobs", {method:"POST", body: c.b64 !== undefined ? {content:c.b64, encoding:"base64"} : {content:c.text, encoding:"utf-8"}});
+          c._sha = blob.sha;
+        }
+        tree.push({path:c.path, mode:"100644", type:"blob", sha:c._sha});
+      }
+      onProgress && onProgress(++i / changes.length);
+    }
+    const nt = await gh("/git/trees", {method:"POST", body:{base_tree: base.tree.sha, tree}});
+    const nc = await gh("/git/commits", {method:"POST", body:{message: message + "\n\nDepuis le dashboard de planning.", tree: nt.sha, parents:[ref.object.sha]}});
+    try {
+      await gh("/git/refs/heads/main", {method:"PATCH", body:{sha: nc.sha, force:false}});
+      return nc.sha;
+    } catch(e){
+      if (e.status === 422 && attempt < 2) continue; // la branche a bougé (le robot vient de publier) : on recommence
+      throw e;
+    }
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* État                                                                */
+/* ------------------------------------------------------------------ */
+const S = { posts: [], loaded:false, loading:false, view: store.get("view","mois"), month: new Date(), headSha:null, error:null };
+S.month.setDate(1);
+
+async function load(silent){
+  if (!cfg.token){ S.loaded = false; render(); return; }
+  if (S.loading) return;
+  S.loading = true; setPill("wait", "Chargement…");
+  try {
+    const ref = await gh("/git/ref/heads/main");
+    const commitObj = await gh("/git/commits/" + ref.object.sha);
+    const tree = await gh("/git/trees/" + commitObj.tree.sha + "?recursive=1");
+    const byFolder = {};
+    for (const e of tree.tree){
+      if (e.type !== "blob") continue;
+      const m = e.path.match(/^(file|brouillons|publies|erreurs)\/([^/]+)\/(.+)$/);
+      if (!m) continue;
+      const key = m[1] + "/" + m[2];
+      (byFolder[key] ||= {zone:m[1], id:m[2], files:[]}).files.push({path:e.path, name:m[3], sha:e.sha, size:e.size});
+    }
+    const posts = await Promise.all(Object.values(byFolder).map(async p => {
+      const pj = p.files.find(f => f.name === "post.json");
+      const et = p.files.find(f => f.name === ".etat.json");
+      p.json = {}; p.etat = null;
+      if (pj){ try { p.json = JSON.parse(textFromB64((await gh("/git/blobs/" + pj.sha)).content)); } catch(e){ p.invalid = "post.json illisible"; } }
+      else p.invalid = "post.json manquant";
+      if (et){ try { p.etat = JSON.parse(textFromB64((await gh("/git/blobs/" + et.sha)).content)); } catch(e){} }
+      p.date = p.json.publier_le ? new Date(p.json.publier_le) : null;
+      if (p.zone === "publies" && p.etat && p.etat.publie_le) p.date = new Date(p.etat.publie_le);
+      return p;
+    }));
+    S.posts = posts; S.headSha = ref.object.sha; S.loaded = true; S.error = null;
+    setPill("ok", "Synchronisé " + hm(new Date()));
+  } catch(e){
+    S.error = e;
+    setPill("ko", e.status === 401 ? "Jeton refusé" : "Erreur de connexion");
+    if (!silent) toast("Impossible de lire le dépôt : " + esc(e.message), "ko", 6000);
+  } finally { S.loading = false; render(); }
+}
+function setPill(kind, text){ $("#syncPill").innerHTML = `<span class="dot ${kind}"></span><span>${esc(text)}</span>`; }
+
+/* ------------------------------------------------------------------ */
+/* Statut d'un post                                                    */
+/* ------------------------------------------------------------------ */
+function status(p){
+  if (p.zone === "publies") return "publie";
+  if (p.zone === "erreurs") return "erreur";
+  if (p.zone === "brouillons") return "brouillon";
+  if (p.invalid) return "erreur";
+  if (p.etat && p.etat.tentatives > 0) return "erreur";
+  if (!(p.json.legende || "").trim()) return "manque";
+  return "programme";
+}
+function mediaUrl(p, name){ return `${pagesBase()}/${p.zone}/${encodeURIComponent(p.id)}/${encodeURIComponent(name)}`; }
+function thumbHtml(p){
+  const j = p.json || {};
+  if (p._local) return p._local;
+  if (j.couverture) return `<img loading="lazy" src="${mediaUrl(p, j.couverture)}" alt="" onerror="this.replaceWith(document.createTextNode('▶'))">`;
+  const m = (j.medias || [])[0];
+  if (!m) return "?";
+  if (/\.(mp4|mov)$/i.test(m)) return `<video muted preload="metadata" src="${mediaUrl(p, m)}#t=1" onerror="this.replaceWith(document.createTextNode('▶'))"></video>`;
+  return `<img loading="lazy" src="${mediaUrl(p, m)}" alt="" onerror="this.replaceWith(document.createTextNode('▣'))">`;
+}
+const typeLabel = t => ({reel:"Reel", image:"Image", carrousel:"Carrousel"}[t] || "?");
+
+/* ------------------------------------------------------------------ */
+/* Rendu                                                               */
+/* ------------------------------------------------------------------ */
+function render(){
+  renderNextRun();
+  if (!cfg.token || (!S.loaded && S.error && S.error.status === 401)){ renderOnboarding(); return; }
+  if (!S.loaded){ renderSkeleton(); return; }
+  renderStats(); renderCalendar(); renderSide();
+}
+function renderNextRun(){
+  const r = nextRunAfter(new Date());
+  $("#nextRun").innerHTML = `<span class="dot wait"></span>Prochain passage ${hm(r)}`;
+}
+function renderOnboarding(){
+  $("#stats").innerHTML = "";
+  $("#calBody").innerHTML = `<div class="onboard">
+    <h2>Connecte le planning à GitHub</h2>
+    <p style="margin:0;color:var(--ink-2);line-height:1.55">Cette page lit et modifie directement la file de publication du dépôt. Une seule étape, à faire une fois sur cet appareil :</p>
+    <ol>
+      <li>Crée un <a class="link" href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">jeton GitHub à accès fin</a>, limité au dépôt <span class="mono">penser-resonner-instagram</span>.</li>
+      <li>Permissions du dépôt : <b>Contents</b> et <b>Actions</b> en <i>Read and write</i>.</li>
+      <li>Colle-le dans les réglages ci-dessous. Il reste dans ce navigateur uniquement.</li>
+    </ol>
+    <div><button class="btn primary" onclick="openSettings()">Ouvrir les réglages</button></div>
+  </div>`;
+  $("#drafts").innerHTML = `<div class="hint">Connecte-toi pour voir tes brouillons.</div>`;
+  $("#alerts").innerHTML = ""; $("#nextList").innerHTML = "";
+  $("#monthTitle").textContent = MOIS[S.month.getMonth()] + " " + S.month.getFullYear();
+}
+function renderSkeleton(){
+  $("#stats").innerHTML = Array(5).fill('<div class="stat"><div class="skeleton" style="height:12px;width:60%"></div><div class="skeleton" style="height:28px;width:40%;margin-top:10px"></div></div>').join("");
+  $("#calBody").innerHTML = `<div style="padding:16px;display:grid;gap:10px">${Array(5).fill('<div class="skeleton" style="height:110px"></div>').join("")}</div>`;
+}
+function renderStats(){
+  const now = new Date(), y = S.month.getFullYear(), m = S.month.getMonth();
+  const inMonth = p => p.date && p.date.getFullYear()===y && p.date.getMonth()===m;
+  const prog = S.posts.filter(p => p.zone==="file" && inMonth(p));
+  const pub = S.posts.filter(p => p.zone==="publies" && inMonth(p));
+  const drafts = S.posts.filter(p => p.zone==="brouillons");
+  const issues = S.posts.filter(p => ["erreur","manque"].includes(status(p)));
+  const upcoming = S.posts.filter(p => p.zone==="file" && p.date).sort((a,b) => a.date-b.date);
+  const nxt = upcoming.find(p => p.date >= now) || upcoming[0];
+  // jours couverts du mois (rythme visé : 1 post tous les 1 à 2 jours)
+  const days = new Set([...prog, ...pub].map(p => p.date.getDate())).size;
+  const dim = new Date(y, m+1, 0).getDate();
+  $("#stats").innerHTML = `
+    <div class="stat accent"><div class="k">Prochaine publication</div><div class="v" style="font-size:22px;margin-top:8px">${nxt ? (nxt.date > now ? esc(relTime(nxt.date)) : "imminente") : "—"}</div><div class="s" title="${nxt ? esc(firstLine(nxt.json.legende)) : ""}">${nxt ? esc(fmtDay(nxt.date)+" · "+hm(nxt.date)+" (robot à "+hm(nextRunAfter(new Date(Math.max(nxt.date, now))))+") · "+(firstLine(nxt.json.legende)||nxt.id)) : "Aucun post programmé"}</div></div>
+    <div class="stat"><div class="k">Programmés ce mois</div><div class="v">${prog.length}</div><div class="s">${upcoming.length} au total dans la file</div></div>
+    <div class="stat"><div class="k">Publiés ce mois</div><div class="v">${pub.length}</div><div class="s">${S.posts.filter(p=>p.zone==="publies").length} depuis le début</div></div>
+    <div class="stat"><div class="k">Jours couverts</div><div class="v">${days}<span style="font-size:16px;color:var(--ink-3)"> / ${dim}</span></div><div class="s">Rythme visé : un jour sur deux = ${Math.ceil(dim/2)}</div></div>
+    <div class="stat ${issues.length ? "accent" : ""}"><div class="k">À surveiller</div><div class="v">${issues.length}</div><div class="s">${drafts.length} brouillon${drafts.length>1?"s":""} en attente</div></div>`;
+}
+function postsOnDay(d){
+  return S.posts.filter(p => p.zone !== "brouillons" && p.date && sameDay(p.date, d)).sort((a,b) => a.date-b.date);
+}
+function chipHtml(p){
+  const st = status(p), j = p.json || {};
+  const t = p.date ? hm(p.date) : "";
+  const cls = {publie:"publie", erreur:"erreur", manque:"manque"}[st] || "";
+  const title = firstLine(j.legende) || (st==="manque" ? "Légende à rédiger" : p.id);
+  return `<div class="chip ${cls}" draggable="${st!=="publie"}" data-id="${esc(p.zone+"/"+p.id)}" title="${esc(title)}">
+    <div class="th">${thumbHtml(p)}</div>
+    <div class="meta"><div class="t">${t}<span class="badge ${j.type==="reel"?"reel":""}">${typeLabel(j.type)}</span></div><div class="c">${esc(title)}</div></div>
+  </div>`;
+}
+function renderCalendar(){
+  const y = S.month.getFullYear(), m = S.month.getMonth();
+  $("#monthTitle").textContent = MOIS[m] + " " + y;
+  document.querySelectorAll("#viewSeg button").forEach(b => b.classList.toggle("on", b.dataset.v === S.view));
+  if (S.view === "liste") return renderList();
+  const first = new Date(y, m, 1), start = new Date(first);
+  start.setDate(1 - ((first.getDay()+6) % 7));
+  const today = new Date(); today.setHours(0,0,0,0);
+  let html = `<div class="dow">${JOURS.map(j => `<div>${j}</div>`).join("")}</div><div class="grid">`;
+  const weeks = Math.ceil(((first.getDay()+6)%7 + new Date(y, m+1, 0).getDate()) / 7);
+  for (let i = 0; i < weeks*7; i++){
+    const d = new Date(start); d.setDate(start.getDate() + i);
+    const ps = postsOnDay(d);
+    const cls = ["cell", d.getMonth()!==m ? "out":"", d < today ? "past":"", sameDay(d, today) ? "today":""].join(" ");
+    const shown = ps.slice(0, 3);
+    html += `<div class="${cls}" data-day="${ymd(d)}"><div class="num"><span>${d.getDate()}</span>${d >= today ? `<button class="add" title="Nouveau post ce jour-là" data-add="${ymd(d)}">＋</button>` : ""}</div>
+      ${shown.map(chipHtml).join("")}${ps.length > 3 ? `<div class="more">+ ${ps.length-3} autre${ps.length>4?"s":""}</div>` : ""}</div>`;
+  }
+  $("#calBody").innerHTML = html + "</div>";
+  wireCalendar();
+}
+function renderList(){
+  const y = S.month.getFullYear(), m = S.month.getMonth();
+  const ps = S.posts.filter(p => p.zone!=="brouillons" && p.date && p.date.getFullYear()===y && p.date.getMonth()===m).sort((a,b) => a.date-b.date);
+  if (!ps.length){ $("#calBody").innerHTML = `<div class="empty">Rien de programmé en ${MOIS[m]}.<br><br><button class="btn primary" onclick="openEditor()">＋ Nouveau post</button></div>`; return; }
+  const groups = {};
+  ps.forEach(p => (groups[ymd(p.date)] ||= []).push(p));
+  $("#calBody").innerHTML = `<div class="list">${Object.entries(groups).map(([k, items]) => {
+    const d = items[0].date;
+    return `<div class="day"><div class="d">${fmtDay(d)}<small>${items.length} post${items.length>1?"s":""}</small></div><div class="items">${items.map(p => {
+      const st = status(p), j = p.json;
+      const stTxt = {publie:'<span class="badge" style="background:var(--green-soft);color:var(--green)">Publié</span>', erreur:'<span class="badge red">Échec</span>', manque:'<span class="badge" style="background:var(--amber-soft);color:var(--amber)">Légende à rédiger</span>', programme:'<span class="badge">Programmé</span>'}[st] || "";
+      return `<div class="row" data-open="${esc(p.zone+"/"+p.id)}"><div class="th">${thumbHtml(p)}</div><div><div class="top">${hm(p.date)} <span class="badge ${j.type==="reel"?"reel":""}">${typeLabel(j.type)}</span> ${stTxt}</div><div class="txt">${esc(j.legende || "")}</div></div>
+        <div>${p.etat && p.etat.lien ? `<a class="link" href="${esc(p.etat.lien)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Voir ↗</a>` : ""}</div></div>`;
+    }).join("")}</div></div>`;
+  }).join("")}</div>`;
+  document.querySelectorAll("[data-open]").forEach(el => el.onclick = () => openEditor(findPost(el.dataset.open)));
+}
+function renderSide(){
+  const drafts = S.posts.filter(p => p.zone === "brouillons").sort((a,b) => a.id.localeCompare(b.id));
+  $("#draftCount").textContent = drafts.length;
+  $("#drafts").innerHTML = drafts.length ? drafts.map(chipHtml).join("") : `<div class="hint">Glisse un post ici pour le retirer du planning.<br>Glisse un brouillon sur un jour pour le programmer.</div>`;
+  const alerts = [];
+  S.posts.forEach(p => {
+    const st = status(p);
+    if (st === "erreur") alerts.push(`<div class="alert ko" data-open="${esc(p.zone+"/"+p.id)}">⚠<div><b>${esc(firstLine(p.json.legende) || p.id)}</b><br>${esc(p.invalid || (p.etat && p.etat.derniere_erreur) || "Échec de publication")}</div></div>`);
+    if (st === "manque") alerts.push(`<div class="alert" data-open="${esc(p.zone+"/"+p.id)}">✎<div><b>${esc(p.id)}</b><br>Légende à rédiger avant le ${p.date ? esc(fmtDay(p.date)) : "—"}</div></div>`);
+  });
+  $("#alerts").innerHTML = alerts.join("") || `<div style="font-size:13px;color:var(--ink-3)">Rien à signaler.</div>`;
+  const now = new Date();
+  const nx = S.posts.filter(p => p.zone==="file" && p.date).sort((a,b) => a.date-b.date).slice(0, 6);
+  $("#nextList").innerHTML = nx.map(p => `<div class="it" data-open="${esc(p.zone+"/"+p.id)}"><div class="th">${thumbHtml(p)}</div><div style="min-width:0"><div style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(firstLine(p.json.legende) || p.id)}</div><div class="when">${esc(fmtDay(p.date))} · ${hm(p.date)} · ${p.date < now ? "au prochain passage" : esc(relTime(p.date))}</div></div></div>`).join("") || `<div style="font-size:13px;color:var(--ink-3)">Aucun post à venir.</div>`;
+  document.querySelectorAll("aside [data-open]").forEach(el => el.onclick = () => openEditor(findPost(el.dataset.open)));
+  wireChips($("#drafts"));
+}
+const findPost = key => S.posts.find(p => p.zone+"/"+p.id === key);
+
+/* ------------------------------------------------------------------ */
+/* Glisser-déposer                                                     */
+/* ------------------------------------------------------------------ */
+let dragKey = null;
+function wireChips(root){
+  root.querySelectorAll(".chip[data-id]").forEach(ch => {
+    ch.addEventListener("dragstart", e => { dragKey = ch.dataset.id; ch.classList.add("dragging"); e.dataTransfer.effectAllowed = "move"; e.dataTransfer.setData("text/plain", dragKey); });
+    ch.addEventListener("dragend", () => { ch.classList.remove("dragging"); dragKey = null; document.querySelectorAll(".over").forEach(x => x.classList.remove("over","refuse")); });
+    ch.addEventListener("click", () => { const p = findPost(ch.dataset.id); if (p) openEditor(p); });
+  });
+}
+const hasFiles = e => e.dataTransfer && Array.from(e.dataTransfer.types || []).includes("Files");
+function wireCalendar(){
+  wireChips($("#calBody"));
+  const today = new Date(); today.setHours(0,0,0,0);
+  document.querySelectorAll(".cell").forEach(cell => {
+    const day = new Date(cell.dataset.day + "T00:00");
+    const past = day < today;
+    cell.addEventListener("dragover", e => {
+      e.preventDefault();
+      if (hasFiles(e)){ cell.classList.add("filedrop"); e.dataTransfer.dropEffect = past ? "none" : "copy"; return; }
+      cell.classList.add("over"); cell.classList.toggle("refuse", past);
+      e.dataTransfer.dropEffect = past ? "none" : "move";
+    });
+    cell.addEventListener("dragleave", () => cell.classList.remove("over","refuse","filedrop"));
+    cell.addEventListener("drop", async e => {
+      e.preventDefault(); e.stopPropagation();
+      cell.classList.remove("over","refuse","filedrop"); hideGlobalDrop();
+      if (hasFiles(e)){
+        if (past){ toast("Choisis un jour à venir.", "ko"); return; }
+        openEditor(null, {date: cell.dataset.day, files: Array.from(e.dataTransfer.files)});
+        return;
+      }
+      const key = e.dataTransfer.getData("text/plain") || dragKey;
+      const p = findPost(key); if (!p) return;
+      if (past){ toast("Impossible de programmer dans le passé.", "ko"); return; }
+      await moveToDay(p, cell.dataset.day);
+    });
+  });
+  document.querySelectorAll("[data-add]").forEach(b => b.onclick = e => { e.stopPropagation(); openEditor(null, {date: b.dataset.add}); });
+}
+const draftsBox = $("#drafts");
+draftsBox.addEventListener("dragover", e => { if (hasFiles(e)) return; e.preventDefault(); draftsBox.classList.add("over"); });
+draftsBox.addEventListener("dragleave", () => draftsBox.classList.remove("over"));
+draftsBox.addEventListener("drop", async e => {
+  draftsBox.classList.remove("over");
+  if (hasFiles(e)) return;
+  e.preventDefault();
+  const p = findPost(e.dataTransfer.getData("text/plain") || dragKey);
+  if (p && p.zone !== "brouillons") await moveZone(p, "brouillons", "Retiré du planning");
+});
+
+/* Dépôt de fichiers n'importe où sur la page */
+let dragDepth = 0;
+const showGlobalDrop = () => { if (!$("#edScrim").classList.contains("on")) $("#globalDrop").classList.add("on"); };
+const hideGlobalDrop = () => { dragDepth = 0; $("#globalDrop").classList.remove("on"); };
+window.addEventListener("dragenter", e => { if (hasFiles(e)){ dragDepth++; showGlobalDrop(); } });
+window.addEventListener("dragleave", e => { if (hasFiles(e) && --dragDepth <= 0) hideGlobalDrop(); });
+window.addEventListener("dragover", e => { if (hasFiles(e)) e.preventDefault(); });
+window.addEventListener("drop", e => {
+  if (!hasFiles(e)) return;
+  e.preventDefault(); hideGlobalDrop();
+  if ($("#edScrim").classList.contains("on")) return;
+  if (!cfg.token){ openSettings(); return; }
+  openEditor(null, {files: Array.from(e.dataTransfer.files)});
+});
+
+/* ------------------------------------------------------------------ */
+/* Opérations sur la file                                              */
+/* ------------------------------------------------------------------ */
+/* Changements pour déplacer (ou réécrire sur place) le dossier d'un post.
+   extra = fichiers à écrire dans le dossier cible : [{name, text}|{name, b64}] */
+function moveChanges(p, zone, extra=[]){
+  const ch = [], moving = zone !== p.zone;
+  const clash = moving && S.posts.some(q => q !== p && q.zone === zone && q.id === p.id);
+  const base = clash ? `${zone}/${p.id}-${Date.now().toString(36)}` : `${zone}/${p.id}`;
+  const rewritten = new Set(extra.map(x => x.name));
+  for (const f of p.files){
+    if (!moving) continue;                               // même dossier : on ne touche qu'aux fichiers réécrits
+    ch.push({path:f.path, del:true});                    // on quitte l'ancien dossier
+    if (f.name === ".etat.json" || rewritten.has(f.name)) continue; // l'état repart à zéro ; les réécrits viennent de extra
+    ch.push({path:`${base}/${f.name}`, sha:f.sha});      // déplacé sans renvoyer le fichier
+  }
+  for (const x of extra) ch.push({path:`${base}/${x.name}`, text:x.text, b64:x.b64});
+  return ch;
+}
+async function withBusy(label, fn){
+  const t = toast(`<span class="spin"></span> ${esc(label)}`, "", 0);
+  try { const r = await fn(); t.remove(); return r; }
+  catch(e){ t.remove(); toast("Échec : " + esc(e.message), "ko", 7000); throw e; }
+}
+async function moveToDay(p, dayStr){
+  const old = p.date || new Date(`${dayStr}T${cfg.hour}`);
+  const d = new Date(`${dayStr}T${pad(old.getHours())}:${pad(old.getMinutes())}`);
+  if (d < new Date()){ d.setTime(nextRunAfter(new Date())); }
+  const json = {...p.json, publier_le: isoLocal(d)};
+  const zone = p.zone === "publies" ? null : "file";
+  if (!zone) return;
+  await withBusy("Déplacement…", () => commit(moveChanges(p, zone, [{name:"post.json", text: JSON.stringify(json, null, 2) + "\n"}]), `Planning : ${p.id} → ${dayStr} ${hm(d)}`));
+  toast(`Programmé le ${fmtDay(d)} à ${hm(d)}`, "ok");
+  await load(true);
+}
+async function moveZone(p, zone, label){
+  await withBusy("Mise à jour…", () => commit(moveChanges(p, zone), `Planning : ${p.id} → ${zone}`));
+  toast(label, "ok"); await load(true);
+}
+
+/* ------------------------------------------------------------------ */
+/* Éditeur                                                             */
+/* ------------------------------------------------------------------ */
+const E = { post:null, files:[], removed:[], cover:null, coverChanged:false, type:"reel", typeManual:false, sel:0, videoDur:0 };
+function openEditor(post, init={}){
+  if (!cfg.token){ openSettings(); return; }
+  Object.assign(E, {post: post || null, files:[], removed:[], cover:null, coverChanged:false, typeManual: !!post, sel:0, videoDur:0});
+  const j = post ? post.json : {};
+  E.type = j.type || "reel";
+  const d = post && post.date ? post.date : null;
+  $("#edTitle").textContent = post ? (post.zone==="publies" ? "Post publié" : "Modifier le post") : "Nouveau post";
+  $("#edZone").textContent = post ? ({file:"programmé",brouillons:"brouillon",publies:"publié",erreurs:"en erreur"}[post.zone]) : "";
+  $("#edZone").hidden = !post;
+  $("#edDate").value = init.date || (d ? ymd(d) : ymd(new Date(Date.now()+86400000)));
+  $("#edTime").value = d ? hm(d) : cfg.hour;
+  $("#edCaption").value = j.legende || "";
+  $("#edFeed").checked = j.partager_dans_le_fil !== false;
+  // médias existants
+  if (post){
+    E.files = (j.medias || []).map(name => ({name, existing:true, url: mediaUrl(post, name), isVideo:/\.(mp4|mov)$/i.test(name)}));
+    if (j.couverture) E.cover = {existing:true, url: mediaUrl(post, j.couverture), name:j.couverture};
+  }
+  const ro = post && post.zone === "publies";
+  ["edDate","edTime","edCaption","edFeed"].forEach(id => $("#"+id).disabled = ro);
+  $("#edSave").hidden = $("#edDraft").hidden = $("#edNow").hidden = ro;
+  $("#edDelete").hidden = !post || ro;
+  $("#edSave").textContent = post && post.zone === "file" ? "Enregistrer" : "Programmer";
+  $("#edDraft").textContent = post && post.zone === "file" ? "Retirer du planning" : "Enregistrer en brouillon";
+  const lk = $("#edIgLink"); lk.hidden = !(post && post.etat && post.etat.lien); if (!lk.hidden) lk.href = post.etat.lien;
+  $("#edProg").hidden = true;
+  $("#edScrim").classList.add("on");
+  if (init.files && init.files.length) addFiles(init.files); else renderMedia();
+  updateCaption();
+  setTimeout(() => (post ? $("#edCaption") : $("#edDate")).focus(), 50);
+}
+function closeEditor(){ $("#edScrim").classList.remove("on"); E.files.forEach(f => f.url && f.local && URL.revokeObjectURL(f.url)); }
+async function toJpeg(file){
+  if (/jpe?g$/i.test(file.type)) return file;
+  const img = await createImageBitmap(file);
+  const c = document.createElement("canvas"); c.width = img.width; c.height = img.height;
+  c.getContext("2d").drawImage(img, 0, 0);
+  const blob = await new Promise(r => c.toBlob(r, "image/jpeg", 0.92));
+  return new File([blob], file.name.replace(/\.[^.]+$/, "") + ".jpg", {type:"image/jpeg"});
+}
+async function addFiles(list){
+  for (let f of list){
+    const isVideo = /^video\//.test(f.type) || /\.(mp4|mov)$/i.test(f.name);
+    const isImage = /^image\//.test(f.type);
+    if (!isVideo && !isImage){ toast(`${esc(f.name)} : format non pris en charge`, "ko"); continue; }
+    if (isImage) f = await toJpeg(f);
+    if (f.size > 95*1048576){ toast(`${esc(f.name)} dépasse 95 Mo (limite GitHub).`, "ko", 6000); continue; }
+    E.files.push({name: f.name, file: f, local:true, isVideo, url: URL.createObjectURL(f), size: f.size});
+  }
+  if (E.files.length > 10){ E.files = E.files.slice(0, 10); toast("10 médias au maximum.", "ko"); }
+  if (!E.typeManual) E.type = E.files.length >= 2 ? "carrousel" : (E.files[0] && E.files[0].isVideo ? "reel" : "image");
+  E.sel = Math.max(0, E.files.length - 1);
+  renderMedia();
+}
+function renderMedia(){
+  document.querySelectorAll("#edType button").forEach(b => b.classList.toggle("on", b.dataset.t === E.type));
+  $("#edFeedWrap").style.display = E.type === "reel" ? "" : "none";
+  const drop = $("#edDrop"), cur = E.files[E.sel];
+  const ph = `<div><div class="big">⇪</div><strong>Glisse ta vidéo ici</strong><small>ou clique pour choisir<br>MP4 (reel) · JPEG/PNG (image) · 2 à 10 fichiers = carrousel</small></div>`;
+  if (!cur) drop.innerHTML = ph;
+  else if (cur.isVideo) drop.innerHTML = `<video id="edVideo" src="${esc(cur.url)}" controls playsinline preload="metadata"></video>`;
+  else drop.innerHTML = `<img src="${esc(cur.url)}" alt="">`;
+  $("#edThumbs").innerHTML = E.files.map((f, i) => `<div class="t ${i===E.sel?"on":""}" data-i="${i}">${f.isVideo ? `<video src="${esc(f.url)}#t=1" muted preload="metadata"></video>` : `<img src="${esc(f.url)}" alt="">`}${E.post && E.post.zone==="publies" ? "" : `<button data-rm="${i}" title="Retirer">✕</button>`}</div>`).join("")
+    + (E.files.length && E.files.length < 10 && !(E.post && E.post.zone==="publies") ? `<div class="t" id="edAddMore" title="Ajouter" style="display:grid;place-items:center;font-size:22px;color:var(--ink-3)">＋</div>` : "");
+  document.querySelectorAll("#edThumbs .t[data-i]").forEach(t => t.onclick = () => { E.sel = +t.dataset.i; renderMedia(); });
+  document.querySelectorAll("#edThumbs [data-rm]").forEach(b => b.onclick = e => { e.stopPropagation(); const f = E.files.splice(+b.dataset.rm, 1)[0]; if (f.existing) E.removed.push(f.name); E.sel = 0; if (!E.typeManual) E.type = E.files.length>=2?"carrousel":(E.files[0]&&E.files[0].isVideo?"reel":"image"); renderMedia(); });
+  const more = $("#edAddMore"); if (more) more.onclick = () => $("#edFile").click();
+  // couverture
+  const showCover = E.type === "reel" && E.files[0] && E.files[0].isVideo;
+  $("#edCover").hidden = !showCover;
+  if (showCover) setupCover();
+  // infos
+  const info = [];
+  const v = E.files.find(f => f.isVideo && f.local);
+  if (v) info.push(`${esc(v.name)} · ${fmtSize(v.size)}`);
+  const tot = E.files.filter(f => f.local).reduce((a, f) => a + f.size, 0);
+  if (tot > 50*1048576) info.push("⚠ Plus de 50 Mo : l'envoi peut prendre un moment.");
+  $("#edMediaInfo").hidden = !info.length; $("#edMediaInfo").innerHTML = info.join("<br>");
+  $("#edTypeHint").textContent = {reel:"1 vidéo verticale", image:"1 image JPEG", carrousel:"2 à 10 médias"}[E.type];
+  validate();
+}
+function setupCover(){
+  const vf = E.files[0], cv = $("#cvCanvas"), ctx = cv.getContext("2d"), range = $("#cvRange");
+  const drawImg = url => { const im = new Image(); im.crossOrigin = "anonymous"; im.onload = () => { ctx.clearRect(0,0,cv.width,cv.height); const r = Math.max(cv.width/im.width, cv.height/im.height); ctx.drawImage(im, (cv.width-im.width*r)/2, (cv.height-im.height*r)/2, im.width*r, im.height*r); }; im.src = url; };
+  if (E.cover && !E.coverChanged) drawImg(E.cover.url);
+  else if (E.cover && E.cover.file) drawImg(E.cover.url);
+  const vid = document.createElement("video");
+  vid.src = vf.url; vid.muted = true; vid.preload = "auto"; vid.crossOrigin = "anonymous"; vid.playsInline = true;
+  vid.onloadedmetadata = () => { E.videoDur = vid.duration; range.max = vid.duration.toFixed(1); validate(); if (!E.cover){ vid.currentTime = Math.min(1, vid.duration/2); } };
+  vid.onseeked = () => {
+    const r = Math.max(cv.width/vid.videoWidth, cv.height/vid.videoHeight);
+    ctx.drawImage(vid, (cv.width-vid.videoWidth*r)/2, (cv.height-vid.videoHeight*r)/2, vid.videoWidth*r, vid.videoHeight*r);
+    $("#cvTime").textContent = vid.currentTime.toFixed(1).replace(".",",") + " s";
+    try {
+      cv.toBlob(b => { if (b) { E.cover = {file: new File([b], "couverture.jpg", {type:"image/jpeg"}), url: URL.createObjectURL(b)}; E.coverChanged = true; } }, "image/jpeg", 0.9);
+    } catch(e){ /* vidéo distante sans CORS : on garde la couverture existante */ }
+  };
+  range.oninput = () => { vid.currentTime = +range.value; };
+}
+function updateCaption(){
+  const t = $("#edCaption").value, n = t.length, h = hashtagCount(t);
+  const c = $("#edCount"); c.textContent = `${n} / 2200`; c.className = "counter " + (n > 2200 ? "bad" : n > 1900 ? "warn" : "");
+  const g = $("#edTags"); g.textContent = `${h} hashtag${h>1?"s":""}`; g.className = "counter " + (h > 30 ? "bad" : h > 5 ? "warn" : "");
+  g.title = "Instagram recommande 3 à 5 hashtags ; 30 au maximum.";
+  const used = new Set((t.match(/#[\p{L}\p{N}_]+/gu) || []).map(x => x.toLowerCase()));
+  $("#edTagSugg").innerHTML = HASHTAGS.filter(x => !used.has(x)).slice(0, 8).map(x => `<span data-tag="${x}">${x}</span>`).join("");
+  document.querySelectorAll("#edTagSugg [data-tag]").forEach(s => s.onclick = () => { const ta = $("#edCaption"); ta.value = ta.value.replace(/\s*$/, "") + (/#\S+\s*$/.test(ta.value) ? " " : "\n\n") + s.dataset.tag; updateCaption(); });
+  $("#edPreview").innerHTML = `<b>penserresonner</b> ` + (esc(t) || '<span style="color:var(--ink-3)">La légende apparaîtra ici.</span>');
+  validate();
+}
+function validate(){
+  const w = [], t = $("#edCaption").value;
+  const d = new Date(`${$("#edDate").value}T${$("#edTime").value || "00:00"}`);
+  if (!E.files.length) w.push(["ko", "Ajoute au moins un média."]);
+  if (E.type === "reel" && (E.files.length !== 1 || !E.files[0].isVideo)) w.push(["ko", "Un reel = exactement une vidéo."]);
+  if (E.type === "image" && (E.files.length !== 1 || E.files[0].isVideo)) w.push(["ko", "Un post image = exactement une image."]);
+  if (E.type === "carrousel" && (E.files.length < 2 || E.files.length > 10)) w.push(["ko", "Un carrousel = 2 à 10 médias."]);
+  if (E.type === "reel" && E.videoDur && (E.videoDur < 3 || E.videoDur > 900)) w.push(["ko", "Un reel doit durer entre 3 s et 15 min."]);
+  if (t.length > 2200) w.push(["ko", "Légende trop longue (2 200 caractères max)."]);
+  if (hashtagCount(t) > 30) w.push(["ko", "30 hashtags au maximum."]);
+  if (!t.trim()) w.push(["warn", "Sans légende, le post ne partira pas : il restera signalé « Légende à rédiger »."]);
+  if (!isNaN(d) && d < new Date() && !(E.post && E.post.zone === "publies")) w.push(["warn", "Date passée : le post partira au prochain passage du robot."]);
+  $("#edWarn").innerHTML = w.map(([k, m]) => `<div class="note ${k}" style="margin-top:8px">${esc(m)}</div>`).join("");
+  E.blocking = w.some(x => x[0] === "ko");
+  $("#edSave").disabled = $("#edNow").disabled = E.blocking;
+  $("#edDraft").disabled = !E.files.length && !(E.post);
+}
+async function saveEditor(mode){
+  // mode : "file" (programmer), "brouillons", "now"
+  if (mode !== "brouillons" && E.blocking) return;
+  const post = E.post;
+  let d = new Date(`${$("#edDate").value}T${$("#edTime").value || cfg.hour}`);
+  if (mode === "now") d = new Date(Date.now() - 60000);
+  const caption = $("#edCaption").value.replace(/\s+$/, "");
+  const zone = mode === "brouillons" ? "brouillons" : "file";
+  const id = post ? post.id : `${ymd(isNaN(d) ? new Date() : d)}-${slugify(firstLine(caption) || (E.files[0] && E.files[0].name.replace(/\.[^.]+$/,"")))}`;
+  // noms des médias
+  const used = new Set(); const medias = []; const uploads = [];
+  E.files.forEach((f, i) => {
+    let name;
+    if (f.existing) name = f.name;
+    else {
+      const ext = f.isVideo ? (f.name.match(/\.(mp4|mov)$/i) || [".mp4"])[0].toLowerCase() : ".jpg";
+      name = E.type === "carrousel" ? `${pad(i+1)}${ext}` : (f.isVideo ? "video" + ext : "image.jpg");
+      while (used.has(name) || (post && post.files.some(pf => pf.name === name) && !E.removed.includes(name))) name = name.replace(/(\.\w+)$/, "-b$1");
+      uploads.push({name, file: f.file});
+    }
+    used.add(name); medias.push(name);
+  });
+  const json = {...(post ? post.json : {}), publier_le: isoLocal(isNaN(d) ? new Date() : d), type: E.type, legende: caption, medias};
+  if (E.type === "reel") json.partager_dans_le_fil = $("#edFeed").checked; else delete json.partager_dans_le_fil;
+  const extra = [];
+  if (E.type === "reel" && E.cover && E.coverChanged && E.cover.file){ json.couverture = "couverture.jpg"; uploads.push({name:"couverture.jpg", file:E.cover.file}); }
+  if (E.type !== "reel") delete json.couverture;
+  const prog = $("#edProg"); prog.hidden = false; const bar = prog.firstElementChild; bar.style.width = "3%";
+  ["edSave","edDraft","edNow","edDelete"].forEach(i => $("#"+i).disabled = true);
+  try {
+    for (const u of uploads) extra.push({name:u.name, b64: await fileToB64(u.file)});
+    extra.push({name:"post.json", text: JSON.stringify(json, null, 2) + "\n"});
+    const keep = new Set([...medias, "post.json", json.couverture].filter(Boolean));
+    let changes;
+    if (post){
+      const stale = post.files.filter(f => !keep.has(f.name) && f.name !== ".etat.json").map(f => ({name:f.name, del:true}));
+      // un post repris depuis « erreurs » repart à zéro
+      const clean = {...post, files: post.files.filter(f => keep.has(f.name) || f.name === ".etat.json")};
+      changes = moveChanges(clean, zone, extra);
+      for (const s of stale) changes.push({path:`${post.zone}/${post.id}/${s.name}`, del:true});
+      if (post.zone === "file" && zone === "file" && post.etat && post.etat.tentatives) changes.push({path:`${post.zone}/${post.id}/.etat.json`, del:true});
+    } else {
+      changes = extra.map(x => ({path:`${zone}/${id}/${x.name}`, text:x.text, b64:x.b64}));
+    }
+    const label = mode === "brouillons" ? "brouillon" : mode === "now" ? "publication immédiate" : `programmé ${ymd(d)} ${hm(d)}`;
+    await commit(changes, `Planning : ${id} (${label})`, p => bar.style.width = Math.round(5 + p*90) + "%");
+    bar.style.width = "100%";
+    if (mode === "now") {
+      try { await gh("/actions/workflows/publier.yml/dispatches", {method:"POST", body:{ref:"main", inputs:{action:"publier"}}}); toast("Publication lancée : le post sera en ligne d'ici quelques minutes.", "ok", 6000); }
+      catch(e){ toast(`Envoyé. Il partira au prochain passage (${hm(nextRunAfter(new Date()))}).`, "ok", 6000); }
+    } else toast(mode === "brouillons" ? "Enregistré dans les brouillons." : `Programmé le ${fmtDay(d)} à ${hm(d)}.`, "ok");
+    closeEditor(); await load(true);
+  } catch(e){
+    toast("Échec de l'enregistrement : " + esc(e.message), "ko", 8000);
+  } finally {
+    prog.hidden = true; ["edSave","edDraft","edNow","edDelete"].forEach(i => $("#"+i).disabled = false); validate();
+  }
+}
+async function deletePost(){
+  const p = E.post; if (!p) return;
+  if (!await confirmBox("Supprimer ce post ?", `Le post <b>${esc(firstLine(p.json.legende) || p.id)}</b> et ses fichiers seront retirés du dépôt. Ils restent récupérables dans l'historique GitHub.`, "Supprimer")) return;
+  await withBusy("Suppression…", () => commit(p.files.map(f => ({path:f.path, del:true})), `Planning : suppression de ${p.id}`));
+  toast("Post supprimé.", "ok"); closeEditor(); await load(true);
+}
+function askClaude(){
+  const p = E.post;
+  const where = p ? `le dossier ${p.zone}/${p.id}` : "le post que je suis en train de créer";
+  const txt = `Rédige la légende Instagram de ${where} (dépôt penser-resonner-instagram) : petit résumé de la vidéo à partir de la discussion « Penser & Résonner » où l'épisode a été produit, sources, puis les hashtags les plus pertinents (5 max). Montre-la-moi avant de l'enregistrer.`;
+  navigator.clipboard.writeText(txt).then(() => { $("#edAskInfo").textContent = "Demande copiée : colle-la dans Claude."; }, () => { $("#edAskInfo").textContent = txt; });
+}
+
+/* ------------------------------------------------------------------ */
+/* Réglages                                                            */
+/* ------------------------------------------------------------------ */
+function openSettings(){
+  $("#setRepo").value = cfg.repo; $("#setToken").value = ""; $("#setToken").placeholder = cfg.token ? "Jeton enregistré (laisser vide pour le garder)" : "github_pat_…";
+  $("#setHour").value = cfg.hour; $("#setMsg").innerHTML = "";
+  $("#setScrim").classList.add("on");
+}
+async function saveSettings(){
+  store.set("repo", $("#setRepo").value.trim());
+  if ($("#setToken").value.trim()) store.set("token", $("#setToken").value.trim());
+  store.set("hour", $("#setHour").value || "18:30");
+  $("#setMsg").innerHTML = `<div class="note"><span class="spin"></span> Test de la connexion…</div>`;
+  try {
+    const r = await gh("");
+    const canWrite = r.permissions ? r.permissions.push : null;
+    $("#setMsg").innerHTML = `<div class="note">✓ Connecté à <b>${esc(r.full_name)}</b>${canWrite === false ? " — ⚠ le jeton n'a pas le droit d'écrire" : ""}.</div>`;
+    setTimeout(() => { $("#setScrim").classList.remove("on"); load(); }, 700);
+  } catch(e){
+    $("#setMsg").innerHTML = `<div class="note ko">Connexion refusée (${esc(e.message)}). Vérifie le jeton et ses permissions.</div>`;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Branchements                                                        */
+/* ------------------------------------------------------------------ */
+$("#prev").onclick = () => { S.month.setMonth(S.month.getMonth()-1); render(); };
+$("#next").onclick = () => { S.month.setMonth(S.month.getMonth()+1); render(); };
+$("#today").onclick = () => { S.month = new Date(); S.month.setDate(1); render(); };
+document.querySelectorAll("#viewSeg button").forEach(b => b.onclick = () => { S.view = b.dataset.v; store.set("view", S.view); render(); });
+$("#btnNew").onclick = () => openEditor();
+$("#btnRefresh").onclick = () => load();
+$("#btnSettings").onclick = openSettings;
+$("#btnTheme").onclick = () => { const n = document.documentElement.dataset.theme === "nuit" ? "" : "nuit"; document.documentElement.dataset.theme = n; store.set("theme", n); };
+document.documentElement.dataset.theme = store.get("theme", "");
+document.querySelectorAll("[data-close]").forEach(b => b.onclick = () => b.closest(".scrim").classList.remove("on"));
+document.querySelectorAll(".scrim").forEach(s => s.addEventListener("mousedown", e => { if (e.target === s && s.id !== "cfScrim") s.classList.remove("on"); }));
+$("#setSave").onclick = saveSettings;
+$("#setForget").onclick = () => { store.del("token"); $("#setScrim").classList.remove("on"); S.posts = []; S.loaded = false; setPill("", "Non connecté"); render(); };
+const edDrop = $("#edDrop");
+edDrop.onclick = e => { if (e.target.tagName !== "VIDEO" && !(E.post && E.post.zone==="publies")) $("#edFile").click(); };
+edDrop.addEventListener("dragover", e => { e.preventDefault(); edDrop.classList.add("over"); });
+edDrop.addEventListener("dragleave", () => edDrop.classList.remove("over"));
+edDrop.addEventListener("drop", e => { e.preventDefault(); e.stopPropagation(); edDrop.classList.remove("over"); if (e.dataTransfer.files.length) addFiles(Array.from(e.dataTransfer.files)); });
+$("#edScrim").addEventListener("drop", e => { if (e.dataTransfer && e.dataTransfer.files.length){ e.preventDefault(); addFiles(Array.from(e.dataTransfer.files)); } });
+$("#edFile").onchange = e => { addFiles(Array.from(e.target.files)); e.target.value = ""; };
+$("#cvUpload").onclick = () => $("#cvFile").click();
+$("#cvFile").onchange = async e => { const f = e.target.files[0]; if (!f) return; const j = await toJpeg(f); E.cover = {file: new File([j], "couverture.jpg", {type:"image/jpeg"}), url: URL.createObjectURL(j)}; E.coverChanged = true; setupCover(); e.target.value = ""; };
+document.querySelectorAll("#edType button").forEach(b => b.onclick = () => { E.type = b.dataset.t; E.typeManual = true; renderMedia(); });
+$("#edCaption").oninput = updateCaption;
+$("#edDate").oninput = $("#edTime").oninput = validate;
+$("#edSave").onclick = () => saveEditor("file");
+$("#edDraft").onclick = () => saveEditor("brouillons");
+$("#edNow").onclick = async () => { if (await confirmBox("Publier maintenant ?", "Le post sera envoyé à Instagram dans les minutes qui viennent.", "Publier")) saveEditor("now"); };
+$("#edDelete").onclick = deletePost;
+$("#edAskClaude").onclick = askClaude;
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape"){ document.querySelectorAll(".scrim.on").forEach(s => { if (s.id !== "cfScrim") s.classList.remove("on"); }); return; }
+  if (/input|textarea|select/i.test(document.activeElement.tagName) || document.querySelector(".scrim.on")) return;
+  if (e.key === "n" || e.key === "N"){ e.preventDefault(); openEditor(); }
+  if (e.key === "r" || e.key === "R") load();
+  if (e.key === "ArrowLeft") $("#prev").click();
+  if (e.key === "ArrowRight") $("#next").click();
+});
+setInterval(() => { renderNextRun(); if (S.loaded && document.visibilityState === "visible" && !document.querySelector(".scrim.on")) load(true); }, 120000);
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && S.loaded) load(true); });
+render(); load();
+</script>
+</body>
+</html>

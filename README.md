@@ -15,6 +15,21 @@ Les médias sont servis par GitHub Pages, car Instagram exige une adresse publiq
 pour chaque fichier. **Ce dépôt est donc public** : ne mets rien ici qui ne soit
 destiné à être publié.
 
+## Dashboard de planning
+
+<https://adrienmoormann-pixel.github.io/penser-resonner-instagram/dashboard/>
+
+Calendrier du mois, glisser-déposer pour reprogrammer, dépôt de vidéos par
+glisser-déposer, éditeur de légende, couverture choisie sur la vidéo, brouillons,
+alertes (légende manquante, échec), vue liste, mode nuit.
+
+La page parle directement à l'API GitHub avec un **jeton à accès fin** saisi dans
+ses réglages (il reste dans le navigateur) : dépôt `penser-resonner-instagram`
+uniquement, permissions **Contents** et **Actions** en *Read and write*.
+
+Les brouillons vivent dans `brouillons/` : le robot ne les publie pas. Un post
+sans légende reste en attente (signalé, jamais publié).
+
 ## Format d'un post
 
 `file/2026-11-20-titre-court/post.json`
